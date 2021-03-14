@@ -36,13 +36,17 @@ namespace MyGenerator.MetaTagProperty
             this.Write(this.ToStringHelper.ToStringWithCulture(ClassName));
             this.Write("\r\n    {\r\n");
  foreach (var item in AttributeFieldSources) { 
-            this.Write("        public ");
-            this.Write(this.ToStringHelper.ToStringWithCulture(GetFieldType(item)));
+            this.Write("        // Created from ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(GetBackingFieldName(item)));
+            this.Write("\r\n        public ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(GetFieldTypeFullName(item)));
             this.Write(" ");
             this.Write(this.ToStringHelper.ToStringWithCulture(GetPropertyName(item)));
             this.Write("\r\n        {\r\n            get\r\n            {\r\n                if (!");
             this.Write(this.ToStringHelper.ToStringWithCulture(GetLoadedFlagName(item)));
-            this.Write(")\r\n                {\r\n                    ");
+            this.Write(")\r\n                {\r\n");
+ if (IsBuiltInType(item)) { 
+            this.Write("                    ");
             this.Write(this.ToStringHelper.ToStringWithCulture(GetBackingFieldName(item)));
             this.Write(" = ");
             this.Write(this.ToStringHelper.ToStringWithCulture(GetMethodName(item)));
@@ -50,7 +54,26 @@ namespace MyGenerator.MetaTagProperty
             this.Write(this.ToStringHelper.ToStringWithCulture(GetOptionKey(item)));
             this.Write(", ");
             this.Write(this.ToStringHelper.ToStringWithCulture(GetOptionId(item)));
-            this.Write(");\r\n                    ");
+            this.Write(");\r\n");
+ } else { 
+            this.Write("                    var value = ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(GetMethodName(item)));
+            this.Write("(");
+            this.Write(this.ToStringHelper.ToStringWithCulture(GetOptionKey(item)));
+            this.Write(", ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(GetOptionId(item)));
+            this.Write(");\r\n                    if (!FastEnumUtility.FastEnum.IsDefined<");
+            this.Write(this.ToStringHelper.ToStringWithCulture(GetFieldTypeFullName(item)));
+            this.Write(">(value))\r\n                        throw new InvalidOperationException(\"Not defin" +
+                    "eded \" + value.ToString() + \"@");
+            this.Write(this.ToStringHelper.ToStringWithCulture(GetFieldTypeShortName(item)));
+            this.Write("\");\r\n\r\n                    ");
+            this.Write(this.ToStringHelper.ToStringWithCulture(GetBackingFieldName(item)));
+            this.Write(" = (");
+            this.Write(this.ToStringHelper.ToStringWithCulture(GetFieldTypeFullName(item)));
+            this.Write(")value;\r\n");
+ } 
+            this.Write("                    ");
             this.Write(this.ToStringHelper.ToStringWithCulture(GetLoadedFlagName(item)));
             this.Write(" = true;\r\n                }\r\n                return ");
             this.Write(this.ToStringHelper.ToStringWithCulture(GetBackingFieldName(item)));

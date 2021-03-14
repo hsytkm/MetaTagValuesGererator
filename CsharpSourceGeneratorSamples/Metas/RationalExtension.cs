@@ -17,5 +17,20 @@ namespace CsharpSourceGeneratorSamples.Metas
             return bs.ToString() + "/" + bb.ToString();
         }
 
+        public static int ToInt(in this MetadataExtractor.Rational rational)
+        {
+            var bs = rational.Numerator;
+            var bb = rational.Denominator;
+
+            while ((bs % 10) == 0 && (bb % 10) == 0)
+            {
+                bs /= 10;
+                bb /= 10;
+            }
+            if (bb != 1) throw new NotSupportedException();
+
+            return bs <= int.MaxValue ? (int)bs : throw new InvalidCastException();
+        }
+
     }
 }

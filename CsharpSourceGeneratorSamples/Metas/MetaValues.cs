@@ -11,22 +11,16 @@ namespace CsharpSourceGeneratorSamples.Metas
         private const string ExifSubIFD = "Exif SubIFD";
 
         private readonly IReadOnlyCollection<MetaPage> _metaPages;
-        private readonly Dictionary<string, MetaPage> _namePagePair = new();
+        private readonly Dictionary<string, MetaPage?> _namePagePair = new();
 
-        public MetaValues(IReadOnlyCollection<MetaPage> metaPages)
-        {
-            _metaPages = metaPages;
-        }
+        public MetaValues(IReadOnlyCollection<MetaPage> metaPages) => _metaPages = metaPages;
 
-        #region BaseMethods
+        #region base methods
         private MetaPage? GeMetaPage(string pageName)
         {
-            if (_namePagePair.TryGetValue(pageName, out var p))
-                return p;
+            if (_namePagePair.TryGetValue(pageName, out var p)) return p;
 
             var page = _metaPages.FirstOrDefault(x => x.Name == pageName);
-            if (page is null) throw new KeyNotFoundException();
-
             _namePagePair.Add(pageName, page);
             return page;
         }
@@ -54,39 +48,42 @@ namespace CsharpSourceGeneratorSamples.Metas
             uint ui => (ui <= int.MaxValue) ? (int)ui : throw new InvalidCastException(),
             long l => (l <= int.MaxValue) ? (int)l : throw new InvalidCastException(),
             ulong ul => (ul <= int.MaxValue) ? (int)ul : throw new InvalidCastException(),
+            MetadataExtractor.Rational r => r.ToInt(),
             _ => throw new NotImplementedException(),
         };
 
         private string GetTagValue_string(string pageName, int tagId) => GetMetaTagData(pageName, tagId) switch
         {
             MetadataExtractor.StringValue sv => sv.ToString(),
-            MetadataExtractor.Rational r => r.ToRationalString(),
             byte[] bs => System.Text.Encoding.ASCII.GetString(bs),
             string s => s,
+            MetadataExtractor.Rational r => r.ToRationalString(),
             _ => throw new NotImplementedException(),
         };
         #endregion
 
+#pragma warning disable IDE0044
+        [MetaTagPropertyGenerator(ExifIFD, 0x010f)]
+        private string _maker = default!;
+
         [MetaTagPropertyGenerator(ExifIFD, 0x0110)]
-        private string _modelName = default!;
+        private string _model = default!;
 
         [MetaTagPropertyGenerator(ExifSubIFD, 0x829d)]
-        private double _fnumber;
+        private double _fNumber;
 
         [MetaTagPropertyGenerator(ExifSubIFD, 0x829a)]
         private string _shutterSpeed = default!;
 
+        [MetaTagPropertyGenerator(ExifSubIFD, 0x8822)]
+        private ExposureProgram _exposureProgram;
+
         [MetaTagPropertyGenerator(ExifSubIFD, 0x8827)]
         private int _isoSpeed;
 
-        [MetaTagPropertyGenerator(ExifSubIFD, 0x9000)]
-        private string _exifVersion = default!;
-
-        [MetaTagPropertyGenerator(ExifSubIFD, 0xa002)]
-        private int _imageWidth;
-
-        [MetaTagPropertyGenerator(ExifSubIFD, 0xa003)]
-        private int _imageHeight;
+        [MetaTagPropertyGenerator(ExifSubIFD, 0x920a)]
+        private int _focalLength;
+#pragma warning restore IDE0044
 
     }
 }

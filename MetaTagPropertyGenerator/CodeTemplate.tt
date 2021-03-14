@@ -16,13 +16,22 @@ namespace <#= Namespace #>
     partial class <#= ClassName #>
     {
 <# foreach (var item in AttributeFieldSources) { #>
-        public <#= GetFieldType(item) #> <#= GetPropertyName(item) #>
+        // Created from <#= GetBackingFieldName(item) #>
+        public <#= GetFieldTypeFullName(item) #> <#= GetPropertyName(item) #>
         {
             get
             {
                 if (!<#= GetLoadedFlagName(item) #>)
                 {
+<# if (IsBuiltInType(item)) { #>
                     <#= GetBackingFieldName(item) #> = <#= GetMethodName(item) #>(<#= GetOptionKey(item) #>, <#= GetOptionId(item) #>);
+<# } else { #>
+                    var value = <#= GetMethodName(item) #>(<#= GetOptionKey(item) #>, <#= GetOptionId(item) #>);
+                    if (!FastEnumUtility.FastEnum.IsDefined<<#= GetFieldTypeFullName(item) #>>(value))
+                        throw new InvalidOperationException("Not defineded " + value.ToString() + "@<#= GetFieldTypeShortName(item) #>");
+
+                    <#= GetBackingFieldName(item) #> = (<#= GetFieldTypeFullName(item) #>)value;
+<# } #>
                     <#= GetLoadedFlagName(item) #> = true;
                 }
                 return <#= GetBackingFieldName(item) #>;

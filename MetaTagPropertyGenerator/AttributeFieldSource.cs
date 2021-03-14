@@ -9,20 +9,27 @@ namespace MyGenerator.MetaTagProperty
 {
     internal class AttributeFieldSource
     {
+        internal enum FieldDeclarationType { BuiltIn, Enum }
+
         internal string FieldName { get; }
-        internal string FieldType { get; }
+        internal string TypeName { get; }
+        internal FieldDeclarationType FieldType { get; }
         internal string Key { get; }
         internal int Id { get; }
 
-        private AttributeFieldSource(string name, string type, string key, int id) => (FieldName, FieldType, Key, Id) = (name, type, key, id);
+        private AttributeFieldSource(string name, string type, FieldDeclarationType decl, string key, int id)
+            => (FieldName, TypeName, FieldType, Key, Id) = (name, type, decl, key, id);
 
         internal static AttributeFieldSource? Create(SemanticModel semanticModel, FieldDeclarationSyntax fieldDeclaration)
         {
             var fieldSymbol = fieldDeclaration.Declaration.Variables.Select(v => semanticModel.GetDeclaredSymbol(v) as IFieldSymbol).FirstOrDefault();
             if (fieldSymbol is null) return null;
 
+            var fieldDecl = (fieldSymbol.Type.TypeKind == TypeKind.Enum) ? FieldDeclarationType.Enum : FieldDeclarationType.BuiltIn;
+            var typeName = fieldSymbol.Type.ToString(); //.Split('.').Last();
+
             var (key, id) = GetOptions(fieldDeclaration);
-            return new(fieldSymbol.Name, fieldSymbol.Type.ToString(), key, id);
+            return new(fieldSymbol.Name, typeName, fieldDecl, key, id);
         }
 
         private static (string key, int id) GetOptions(FieldDeclarationSyntax fieldDeclaration)

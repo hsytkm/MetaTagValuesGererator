@@ -1,4 +1,5 @@
 ﻿using CsharpSourceGeneratorSamples.Metas;
+using FastEnumUtility;
 using System;
 using System.Reflection;
 
@@ -16,7 +17,7 @@ namespace CsharpSourceGeneratorSamples
             var book = shelf.GetOrAdd(filePath);
 
             //Console.WriteLine($"Fnumber: {book.Values.Fnumber}");
-            //Console.WriteLine($"IsoSpeed: {book.Values.IsoSpeed}");
+            Console.WriteLine("--------------------------------");
 
             var obj = book.Values;
             var properties = obj.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
@@ -25,6 +26,9 @@ namespace CsharpSourceGeneratorSamples
                 var ret = pi.GetGetMethod()?.Invoke(obj, null)?.ToString() ?? "null";
                 Console.WriteLine($"{pi.Name} : {ret}");
             }
+            Console.WriteLine("--------------------------------");
+
+            Console.WriteLine($"{book.Values.ExposureProgram} -> {book.Values.ExposureProgram.GetEnumMemberValue()}");
 
         }
     }

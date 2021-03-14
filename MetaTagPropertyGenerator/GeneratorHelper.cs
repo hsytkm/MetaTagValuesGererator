@@ -10,9 +10,9 @@ namespace MyGenerator.MetaTagProperty
 {
     static class StringExtension
     {
-        public static string ToLowerOnlyFirst(this string str) => Char.ToLower(str[0]) + str.Substring(1);
+        //public static string ToLowerOnlyFirst(this string str) => Char.ToLower(str[0]) + str.Substring(1);
         public static string ToUpperOnlyFirst(this string str) => Char.ToUpper(str[0]) + str.Substring(1);
-        public static string JoinWithCommas(this IEnumerable<string> ss) => string.Join(", ", ss);
+        //public static string JoinWithCommas(this IEnumerable<string> ss) => string.Join(", ", ss);
     }
 
     static class RoslynExtension
@@ -50,7 +50,7 @@ namespace MyGenerator.MetaTagProperty
             return stringBuilder.ToString();
         }
 
-        public static string? NullIfEmpty(this string? value) => string.IsNullOrEmpty(value) ? null : value;
+        //public static string? NullIfEmpty(this string? value) => string.IsNullOrEmpty(value) ? null : value;
     }
 
     static class SyntaxExtension

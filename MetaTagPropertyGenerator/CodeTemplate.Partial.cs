@@ -16,7 +16,8 @@ namespace MyGenerator.MetaTagProperty
             AttributeFieldSources = fieldSources.ToList();
         }
 
-        internal static string GetFieldType(AttributeFieldSource source) => source.FieldType;
+        internal static string GetFieldTypeFullName(AttributeFieldSource source) => source.TypeName;
+        internal static string GetFieldTypeShortName(AttributeFieldSource source) => source.TypeName.Split('.').Last();
         internal static string GetBackingFieldName(AttributeFieldSource source) => source.FieldName;
         internal static string GetLoadedFlagName(AttributeFieldSource source) => source.FieldName + "_loaded";
         internal static string GetPropertyName(AttributeFieldSource source)
@@ -25,9 +26,12 @@ namespace MyGenerator.MetaTagProperty
             var propName = (fieldName[0] == '_') ? fieldName.Substring(1) : fieldName;
             return propName.ToUpperOnlyFirst();
         }
-        internal static string GetMethodName(AttributeFieldSource source) => "GetTagValue_" + source.FieldType;
+        internal static string GetMethodName(AttributeFieldSource source)
+            => "GetTagValue_" + (source.FieldType == AttributeFieldSource.FieldDeclarationType.BuiltIn ? source.TypeName : "int");
+
         internal static string GetOptionKey(AttributeFieldSource source) => source.Key;
         internal static string GetOptionId(AttributeFieldSource source) => "0x" + source.Id.ToString("x4");
+        internal static bool IsBuiltInType(AttributeFieldSource source) => source.FieldType == AttributeFieldSource.FieldDeclarationType.BuiltIn;
 
     }
 }
