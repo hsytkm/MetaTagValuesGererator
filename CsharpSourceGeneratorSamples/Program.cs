@@ -1,5 +1,6 @@
 ﻿using CsharpSourceGeneratorSamples.Metas;
 using System;
+using System.Reflection;
 
 namespace CsharpSourceGeneratorSamples
 {
@@ -14,10 +15,16 @@ namespace CsharpSourceGeneratorSamples
             var shelf = new MetaShelf();
             var book = shelf.GetOrAdd(filePath);
 
-            Console.WriteLine($"Fnumber: {book.Values.Fnumber}");
-            Console.WriteLine($"IsoSpeed: {book.Values.IsoSpeed}");
-            Console.WriteLine($"ImageWidth: {book.Values.ImageWidth}");
-            Console.WriteLine($"ImageHeight: {book.Values.ImageHeight}");
+            //Console.WriteLine($"Fnumber: {book.Values.Fnumber}");
+            //Console.WriteLine($"IsoSpeed: {book.Values.IsoSpeed}");
+
+            var obj = book.Values;
+            var properties = obj.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            foreach (var pi in properties)
+            {
+                var ret = pi.GetGetMethod()?.Invoke(obj, null)?.ToString() ?? "null";
+                Console.WriteLine($"{pi.Name} : {ret}");
+            }
 
         }
     }

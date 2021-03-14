@@ -8,6 +8,7 @@
 // </auto-generated>
 #nullable enable
 using System;
+
 <# if (!string.IsNullOrEmpty(Namespace)) { #>
 namespace <#= Namespace #>
 <# } #>

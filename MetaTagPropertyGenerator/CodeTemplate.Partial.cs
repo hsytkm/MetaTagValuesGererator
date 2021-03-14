@@ -8,12 +8,10 @@ namespace MyGenerator.MetaTagProperty
     {
         internal string Namespace { get; set; } = "";
         internal string ClassName { get; }
-        //internal ClassDeclarationSyntax ParentClassDeclaration { get; }
         internal IReadOnlyList<AttributeFieldSource> AttributeFieldSources { get; }
 
         internal CodeTemplate(ClassDeclarationSyntax classDeclaration, IEnumerable<AttributeFieldSource> fieldSources)
         {
-            //ParentClassDeclaration = classDeclaration;
             ClassName = classDeclaration.GetGenericTypeName();
             AttributeFieldSources = fieldSources.ToList();
         }
