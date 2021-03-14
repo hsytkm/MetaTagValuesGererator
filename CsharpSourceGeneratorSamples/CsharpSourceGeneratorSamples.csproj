@@ -10,4 +10,8 @@
     <PackageReference Include="MetadataExtractor" Version="2.4.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MetaTagPropertyGenerator\MetaTagPropertyGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
 </Project>
