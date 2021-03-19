@@ -28,7 +28,8 @@ namespace CsharpSourceGeneratorSamples
             }
             Console.WriteLine("--------------------------------");
 
-            Console.WriteLine($"{book.Values.ExposureProgram} -> {book.Values.ExposureProgram.GetEnumMemberValue()}");
+            // FastEnum
+            //Console.WriteLine($"{book.Values.ExposureProgram} -> {book.Values.ExposureProgram.GetEnumMemberValue()}");
 
         }
     }

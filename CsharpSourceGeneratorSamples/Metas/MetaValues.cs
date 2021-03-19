@@ -36,6 +36,7 @@ namespace CsharpSourceGeneratorSamples.Metas
         private double GetTagValue_double(string pageName, int tagId) => GetMetaTagData(pageName, tagId) switch
         {
             MetadataExtractor.Rational r => r.ToDouble(),   // (double)r.Numerator / r.Denominator
+            null => 0,
             _ => throw new NotImplementedException(),
         };
 
@@ -49,6 +50,7 @@ namespace CsharpSourceGeneratorSamples.Metas
             long l => (l <= int.MaxValue) ? (int)l : throw new InvalidCastException(),
             ulong ul => (ul <= int.MaxValue) ? (int)ul : throw new InvalidCastException(),
             MetadataExtractor.Rational r => r.ToInt(),
+            null => 0,
             _ => throw new NotImplementedException(),
         };
 
@@ -58,6 +60,8 @@ namespace CsharpSourceGeneratorSamples.Metas
             byte[] bs => System.Text.Encoding.ASCII.GetString(bs),
             string s => s,
             MetadataExtractor.Rational r => r.ToRationalString(),
+            MetadataExtractor.Rational[] r => r.ToRationalsString("-"),
+            null => "",
             _ => throw new NotImplementedException(),
         };
         #endregion
@@ -81,8 +85,15 @@ namespace CsharpSourceGeneratorSamples.Metas
         [MetaTagPropertyGenerator(ExifSubIFD, 0x8827)]
         private int _isoSpeed;
 
+        [MetaTagPropertyGenerator(ExifSubIFD, 0x9207)]
+        private MeteringMode _meteringMode;
+
         [MetaTagPropertyGenerator(ExifSubIFD, 0x920a)]
         private int _focalLength;
+
+        [MetaTagPropertyGenerator(ExifSubIFD, 0xa432)]
+        private string _lensSpecification = default!;
+
 #pragma warning restore IDE0044
 
     }

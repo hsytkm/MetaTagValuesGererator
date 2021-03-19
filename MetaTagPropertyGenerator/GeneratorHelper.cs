@@ -1,4 +1,7 @@
-﻿using Microsoft.CodeAnalysis;
+﻿#pragma warning disable IDE0057
+#pragma warning disable IDE0060
+#pragma warning disable CA1822
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
@@ -38,11 +41,11 @@ namespace MyGenerator.MetaTagProperty
             stringBuilder.Append(container.ContainingNamespace.FullName());
             foreach (var type in container.GetContainingTypesAndThis().Reverse())
             {
-                stringBuilder.Append(".");
+                stringBuilder.Append('.');
                 stringBuilder.Append(type.Name);
                 if (type.TypeParameters.Length > 0)
                 {
-                    stringBuilder.Append("_");
+                    stringBuilder.Append('_');
                     stringBuilder.Append(type.TypeParameters.Length);
                 }
             }
